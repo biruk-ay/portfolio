@@ -1,91 +1,55 @@
-import { Trail, OrbitControls, Stars, Text } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
-import * as THREE from 'three'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { OrbitControls, Stars, Text  } from '@react-three/drei';
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import Projects from './projects';
 
-
-const ShootingStar = () => {
-  
-  const ref = useRef()
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime() * 2
-    ref.current.position.set(Math.sin(t) * 4, Math.atan(t) * Math.cos(t / 2) * 2, Math.cos(t) * 4)
-  })
-  return (
-    <Trail width={5} length={8} color={new THREE.Color(2, 1, 10)} attenuation={(t) => t * t}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.25]} />
-        <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
-      </mesh>
-    </Trail>
-  )
-}
-
-const ShootingStarV1 = () => {
-  
-  const ref = useRef()
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime() * 2
-    ref.current.position.set(Math.sin(t) * 4, Math.atan(t) * Math.cos(t * 2) * 2, Math.cos(t) * 4)
-  })
-  return (
-    <Trail width={5} length={8} color={new THREE.Color(2, 1, 10)} attenuation={(t) => t * t}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.25]} />
-        <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
-      </mesh>
-    </Trail>
-  )
-}
-
-const StarsBg = () => {
+const StarsBg = ({ onEnterProjects }) => {
   const ref = useRef();
   useFrame((state, delta) => {
-    ref.current.rotation.y += delta * 0.01
-  })
+    ref.current.rotation.y += delta * 0.02;
+  });
 
   return (
     <group ref={ref}>
       <Stars saturation={50} count={10000} speed={1} fade={false} factor={2} depth={50} radius={100} />
-      <SphereClick />
+      <SphereClick onEnterProjects={onEnterProjects}/>
     </group>
+  );
+};
 
-  )
-}
-
-const SphereClick = () => {
+const SphereClick = ({ onEnterProjects }) => {
   const ref = useRef();
   useFrame((state,delta) => {
     ref.current.rotation.y += delta * 0.1
   })
   return (
     <group>
-      <mesh position={[300,0,0]} ref={ref}>
+      <mesh position={[300,0,0]} ref={ref} onClick={onEnterProjects}>
         <sphereGeometry args={[10,100,10]} />
         <meshBasicMaterial color={'white'}/>
       </mesh>
-      <Text position={[300,15,0]} fontSize={5} color="white">Experience</Text>
+      <Text position={[300,15,0]} fontSize={5} color="white">Projects</Text>
     </group>
   )
 }
-const Background = () => {
+
+const Background = ({ onEnterProjects }) => {
 
   return (
     <>
-        <group>
-            <StarsBg />
-            <OrbitControls />
-            <ambientLight intensity={0.1} />
-            <ShootingStar />
-            <ShootingStarV1 />
-            <directionalLight position={[1, 2, 3]} intensity={1.5} color={'red'} />
-            <EffectComposer>
-              <Bloom mipmapBlur luminanceThreshold={1} />
-            </EffectComposer>
-        </group>
+      <group>
+      <StarsBg onEnterProjects={onEnterProjects} />
+        <OrbitControls />
+        <ambientLight intensity={0.1} />
+        <directionalLight position={[1, 2, 3]} intensity={1.5} color={'red'} />
+        <EffectComposer>
+          <Bloom mipmapBlur luminanceThreshold={1} />
+        </EffectComposer>        
+      </group>
     </>
-  )
-}
+  );
+};
 
 export default Background;
