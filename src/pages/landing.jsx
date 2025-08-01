@@ -9,7 +9,7 @@ const Landing = () => {
     <>
       <div className="fixed top-0 left-0 w-screen h-screen bg-black">
         <Canvas className="w-full h-full">
-          <Perf position="top left" />
+          {/* <Perf position="top left" /> */}
           {showProjects ? (
             <Projects onBack={() => setShowProjects(false)} />
           ) : (
